@@ -2,26 +2,63 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
+import pandas as pd
+from streamlit_option_menu import option_menu
+
 
 
 # Set page configuration
 st.set_page_config(page_title='Customer Segmentation Dashboard', layout='wide')
 
-# Interactive Button Area
-with st.sidebar:
-    st.markdown("<div style='padding: 20px;'>tombol pilihan</div>", unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
-    with col1:
-        st.button('1')
-        st.button('3')
-    with col2:
-        st.button('2')
-        st.button('4')
+#st.sidebar.markdown("<h1>Clustering Analysis</h1>", unsafe_allow_html=True)
 
-# Header
+# Inisialisasi variabel untuk menyimpan teks yang akan ditampilkan
+#selected_button = None
+
+# Sidebar dengan tombol pilihan
+#with st.sidebar:
+#    st.markdown("<div style='padding: 20px;'>Select Clustering : </div>", unsafe_allow_html=True)
+#    if st.button('🌍    Spending Behavior'):
+#        selected_button = "Cluster Spending Behavior"
+#    if st.button('🌍    Product Preference'):
+#        selected_button = "Cluster Product Preference"
+#    if st.button('🌍    Loyalty and Engagement'):
+#        selected_button = "Cluster Loyalty and Engagement"
+#    if st.button('🌍    Demographic'):
+#        selected_button = "Cluster Demographic"
+#    if st.button('🌍    Payment and Shipping'):
+#        selected_button = "Cluster Payment and Shipping"
+
+selected = None
+
+with st.sidebar:
+    selected = option_menu("Clustering Analysis", ['General', 
+                                        'Spending Behavior', 
+                                        'Product Preference',
+                                        'Loyalty and Engagement',
+                                        'Demographic',
+                                        'Payment and Shipping'], 
+
+        icons=['house', 
+                'currency-dollar', 
+                'basket-fill',
+                'arrow-through-heart-fill',
+                'globe-americas',
+                'truck'], menu_icon="cast", default_index=1)
+    #selected
+
+st.sidebar.markdown("<h1>KPI</h1>", unsafe_allow_html=True)
+
+# Menampilkan teks di bagian bawah halaman berdasarkan tombol yang ditekan
+if selected:
+    st.sidebar.markdown(f"<h3>{selected}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3>{selected}</h3>", unsafe_allow_html=True)
+
+# Bagian utama
 st.markdown("""
-<div class='big-font' style='font-size: 40px; font-weight: bold; text-align: left; margin: 15px;'>CUSTOMER SEGMENTATION</div>
+<div class='big-font' style='font-size: 40px; font-weight: bold; text-align: left; margin: 5px 0 15px;'>CUSTOMER SEGMENTATION</div>
 """, unsafe_allow_html=True)
+
 
 # Customer count boxes
 customer_count_cols = st.columns(4)
@@ -41,33 +78,74 @@ customer_info = [
 
 for i in range(4):
     with customer_count_cols[i]:
-        st.markdown(f"<div style='{'; '.join([f'{prop}: {value}' for prop, value in box_styles[i].items()])}; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 20px; margin: 5px; height: 100px;'><div style='font-size: 14px;'>{customer_info[i]['top_text']}</div><div style='font-size: 24px; font-weight: bold; text-align: center;'>{customer_info[i]['bottom_text']}</div></div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='{'; '.join([f'{prop}: {value}' for prop, value in box_styles[i].items()])}; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 10px; margin: 0px; height: 100px;'><div style='font-size: 14px;'>{customer_info[i]['top_text']}</div><div style='font-size: 24px; font-weight: bold; text-align: center;'>{customer_info[i]['bottom_text']}</div></div>", unsafe_allow_html=True)
 
 
 # Main Content Area
 #st.markdown("<h2>Map of Indonesia</h2>", unsafe_allow_html=True)
 
-# Create a map of Indonesia using Plotly Express
+# Data yang akan digunakan untuk peta Indonesia
+data = {
+    "Country": ["Indonesia"],
+    "Life expectancy": [3],
+}
+
+# Membuat DataFrame dari data
+df = pd.DataFrame(data)
+
+
+# Membuat peta Indonesia menggunakan Plotly Express
 fig = px.choropleth(
-    locations=["Indonesia"],  # Provide the country name (Indonesia)
+    df,
+    locations="Country",
     locationmode="country names",
-    color=[3],  # Use a dummy value (1) to represent Indonesia
-    title="Map of Indonesia",
+    color="Life expectancy",
+    color_continuous_scale="Inferno",  # Gunakan skema warna yang sama dengan sebelumnya
+    title="Life Expectancy in Indonesia",
 )
 
-# Customize the map
+# Menyesuaikan tampilan peta
 fig.update_geos(
     showcoastlines=True,
-    coastlinecolor="Black",
+    coastlinecolor="black",
     showland=True,
     landcolor="lightgray",
-    projection_scale=60,  # Increase scale for a wider map
-    lataxis_range=[-20, 20],  # Adjust latitude axis range for a more centered view
-    lonaxis_range=[90, 180],  # Adjust longitude axis range for a wider map
+    projection_scale= 0.9,  # Sesuaikan dengan skala yang sesuai
+    lataxis_range=[-13, 13],  # Rentang latitude sesuai dengan Indonesia
+    lonaxis_range=[94, 141]  # Rentang longitude sesuai dengan Indonesia
 )
 
-# Display the map with a specified width
-st.plotly_chart(fig, use_container_width=True)
+# Mengatur ukuran peta dengan ukuran yang lebih besar
+fig.update_layout(
+    width=800,  # Sesuaikan ukuran peta sesuai kebutuhan
+    height=600   # Sesuaikan ukuran peta sesuai kebutuhan
+)
+
+
+
+# Create a sidebar column for the pie chart
+col1, col2 = st.columns([3, 1])
+
+# Add the pie chart to the sidebar column
+with col1:
+    st.plotly_chart(fig, use_container_width=True)
+
+
+# Display the map in the larger column
+with col2:
+    # Create a synthetic pie chart
+    # Create a synthetic pie chart
+    labels = ['Category A', 'Category B', 'Category C']
+    values = [30, 40, 30]
+    fig = px.pie(labels = labels, 
+            values = values, 
+            title = "Pie Chart Example")
+
+    # Remove the legend
+    fig.update_layout(showlegend=False)
+
+    # Display the modified pie chart with a square aspect ratio
+    st.plotly_chart(fig, use_container_width=True, height=500)
 
 
 # Footer with three columns
