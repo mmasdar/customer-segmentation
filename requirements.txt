@@ -1,6 +1,6 @@
-import streamlit as st
-import plotly.express as px
-import plotly.graph_objects as go
-import numpy as np
-import pandas as pd
-from streamlit_option_menu import option_menu
+streamlit
+plotly
+plotly.graph_objects
+numpy
+pandas
+streamlit_option_menu
