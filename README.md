@@ -59,11 +59,7 @@ bash streamlit run app.py
 
 We welcome contributions! Please submit a pull request with your proposed changes.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
 ## Authors and Acknowledgment
 
-- [Your Name](https://github.com/username)
-- Inspired by Masdar's Personal Project
+- [Masdar](https://www.linkedin.com/in/muhammad-masdar-mahasin-66914378/)
+- by Masdar's Personal Project (https://mahaseenlab.com/)
