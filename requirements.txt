@@ -1,5 +1,8 @@
-streamlit
-plotly
 numpy
 pandas
+streamlit
+plotly
 streamlit_option_menu
+openai
+docx2txt
+scikit-learn
